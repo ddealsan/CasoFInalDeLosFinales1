@@ -1,16 +1,10 @@
 package ui;
 
-import CrearNuevoExp.NewExperimentInterface;
-import AbrirArchivoConEXP.ProjectSelectionInterface;
 import javax.swing.*;
 import java.awt.*;
 
 public class WelcomeInterface extends JFrame {
-    private JButton openExperimentButton;
-    private JButton newExperimentButton;
-    private JButton createBacteriaPopulationButton;
-    private JButton viewBacteriaPopulationsButton;
-    private JButton deleteBacteriaPopulationButton;
+    private JButton startButton;
     private JButton exitButton;
 
     public WelcomeInterface() {
@@ -44,20 +38,11 @@ public class WelcomeInterface extends JFrame {
 
         // Add buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(6, 1)); // Change the grid layout to 6 rows instead of 7
-        openExperimentButton = createButton("Abrir un archivo que contenga un experimento");
-        newExperimentButton = createButton("Crear un nuevo experimento");
-        createBacteriaPopulationButton = createButton("Crear una población de bacterias y añadirla al experimento actual");
-        viewBacteriaPopulationsButton = createButton("Visualizar los nombres de todas las poblaciones de bacterias del experimento actual");
-        deleteBacteriaPopulationButton = createButton("Borrar una población de bacterias del experimento actual");
+        buttonPanel.setLayout(new GridLayout(2, 1)); // Change the grid layout to 2 rows
+        startButton = createButton("Iniciar");
         exitButton = createButton("Salir");
         exitButton.addActionListener(e -> System.exit(0));
-        buttonPanel.add(openExperimentButton);
-        buttonPanel.add(newExperimentButton);
-        buttonPanel.add(createBacteriaPopulationButton);
-        buttonPanel.add(viewBacteriaPopulationsButton);
-        buttonPanel.add(deleteBacteriaPopulationButton);
-        // Do not add the viewBacteriaPopulationDetailsButton
+        buttonPanel.add(startButton);
         buttonPanel.add(exitButton);
         splitPane.setRightComponent(buttonPanel);
 
@@ -69,12 +54,11 @@ public class WelcomeInterface extends JFrame {
         JButton button = new JButton(text);
         button.setBackground(Color.BLUE);
         button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 24)); // Set the font size to 24
 
-        // Add an action listener to the "Crear un nuevo experimento" button
-        if (text.equals("Crear un nuevo experimento")) {
-            button.addActionListener(e -> new NewExperimentInterface());
-        } else if (text.equals("Abrir un archivo que contenga un experimento")) {
-            button.addActionListener(e -> new ProjectSelectionInterface());
+        // Add an action listener to the "Iniciar" button
+        if (text.equals("Iniciar")) {
+            button.addActionListener(e -> new ExperimentInterface());
         }
 
         return button;
