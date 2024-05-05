@@ -1,15 +1,11 @@
 package ui;
 
-import AlmacenamientoPoblaciones.BacteriaPopulation;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -17,6 +13,7 @@ import java.util.stream.Collectors;
 public class ExperimentInterface extends JFrame {
     private JList<String> experimentList;
     private JList<String> populationList;
+    private JPanel detailsPanel;
     private JButton addExperimentButton;
     private JButton addPopulationButton;
     private JButton deletePopulationButton;
@@ -32,7 +29,7 @@ public class ExperimentInterface extends JFrame {
 
         JSplitPane splitPane = new JSplitPane();
         splitPane.setDividerSize(1);
-        splitPane.setDividerLocation(700);
+        splitPane.setDividerLocation(200);
         splitPane.setEnabled(false);
         getContentPane().add(splitPane, BorderLayout.CENTER);
 
@@ -42,8 +39,17 @@ public class ExperimentInterface extends JFrame {
         JScrollPane experimentScrollPane = new JScrollPane(experimentList);
         splitPane.setLeftComponent(experimentScrollPane);
 
+        JSplitPane rightSplitPane = new JSplitPane();
+        rightSplitPane.setDividerSize(1);
+        rightSplitPane.setDividerLocation(200);
+        rightSplitPane.setEnabled(false);
+        splitPane.setRightComponent(rightSplitPane);
+
         populationList = new JList<>();
-        splitPane.setRightComponent(new JScrollPane(populationList));
+        rightSplitPane.setLeftComponent(new JScrollPane(populationList));
+
+        detailsPanel = new JPanel();
+        rightSplitPane.setRightComponent(detailsPanel);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 5));
