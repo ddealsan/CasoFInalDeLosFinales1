@@ -1,19 +1,24 @@
 package ui;
 
+import AlmacenamientoPoblaciones.BacteriaPopulation;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class ExperimentInterface extends JFrame {
     private JList<String> experimentList;
-    private JPanel populationPanel;
+    private JList<String> populationList;
     private JButton addExperimentButton;
     private JButton addPopulationButton;
     private JButton deletePopulationButton;
     private JButton showExperimentDetailsButton;
     private JButton deleteExperimentButton;
+    private File experimentFolder;
 
     public ExperimentInterface() {
         // Set up the frame
@@ -30,59 +35,55 @@ public class ExperimentInterface extends JFrame {
         getContentPane().add(splitPane, BorderLayout.CENTER);
 
         // Add experiment list
-        File experimentFolder = new File("src/main/resources/experimentos");
+        experimentFolder = new File("src/main/resources/experimentos");
         String[] experimentFiles = experimentFolder.list();
         experimentList = new JList<>(experimentFiles);
         JScrollPane experimentScrollPane = new JScrollPane(experimentList);
         splitPane.setLeftComponent(experimentScrollPane);
 
-        // Add population panel
-        populationPanel = new JPanel();
-        splitPane.setRightComponent(populationPanel);
+        // Add population list
+        populationList = new JList<>();
+        splitPane.setRightComponent(new JScrollPane(populationList));
 
         // Add buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 5));
         addExperimentButton = new JButton("Agregar experimento");
-        addExperimentButton.addActionListener(e -> {
-            String experimentName = JOptionPane.showInputDialog("Introduce el nombre del experimento:");
-            String startDate = JOptionPane.showInputDialog("Introduce la fecha de inicio (dd/mm/yyyy):");
-            String endDate = JOptionPane.showInputDialog("Introduce la fecha de finalización (dd/mm/yyyy):");
-            File newExperimentFile = new File(experimentFolder, experimentName + ".txt");
-            try (FileWriter writer = new FileWriter(newExperimentFile)) {
-                writer.write("Nombre del experimento: " + experimentName + "\n");
-                writer.write("Fecha de inicio: " + startDate + "\n");
-                writer.write("Fecha de finalización: " + endDate + "\n");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-            // Refresh the experiment list
-            experimentList.setListData(experimentFolder.list());
-        });
-        buttonPanel.add(addExperimentButton);
         addPopulationButton = new JButton("Agregar población");
-        addPopulationButton.addActionListener(e -> {
-            // Add the action for adding a population
-        });
-        buttonPanel.add(addPopulationButton);
         deletePopulationButton = new JButton("Borrar población");
-        deletePopulationButton.addActionListener(e -> {
-            // Add the action for deleting a population
-        });
-        buttonPanel.add(deletePopulationButton);
         showExperimentDetailsButton = new JButton("Mostrar detalles de experimento");
-        showExperimentDetailsButton.addActionListener(e -> {
-            // Add the action for showing experiment details
-        });
-        buttonPanel.add(showExperimentDetailsButton);
         deleteExperimentButton = new JButton("Borrar experimento");
-        deleteExperimentButton.addActionListener(e -> {
-            // Add the action for deleting an experiment
-        });
+        buttonPanel.add(addExperimentButton);
+        buttonPanel.add(addPopulationButton);
+        buttonPanel.add(deletePopulationButton);
+        buttonPanel.add(showExperimentDetailsButton);
         buttonPanel.add(deleteExperimentButton);
-        add(buttonPanel, BorderLayout.NORTH); // Changed from SOUTH to NORTH
+        add(buttonPanel, BorderLayout.NORTH);
+
+        experimentList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                File selectedExperimentFile = new File(experimentFolder, experimentList.getSelectedValue());
+                loadPopulationNames(selectedExperimentFile);
+            }
+        });
 
         // Make the frame visible
         setVisible(true);
+    }
+
+    private void loadPopulationNames(File experimentFile) {
+        try (Scanner scanner = new Scanner(experimentFile)) {
+            DefaultListModel<String> model = new DefaultListModel<>();
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.startsWith("Nombre de la poblacion: ")) {
+                    String populationName = line.substring("Nombre de la poblacion: ".length());
+                    model.addElement(populationName);
+                }
+            }
+            populationList.setModel(model);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
