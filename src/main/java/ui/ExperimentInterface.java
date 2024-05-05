@@ -1,5 +1,6 @@
 package ui;
 
+import details.ExperimentDetails;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -65,11 +66,17 @@ public class ExperimentInterface extends JFrame {
         buttonPanel.add(deleteExperimentButton);
         add(buttonPanel, BorderLayout.NORTH);
 
-        experimentList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                File selectedExperimentFile = new File(experimentFolder, experimentList.getSelectedValue());
-                loadPopulationNames(selectedExperimentFile);
+        showExperimentDetailsButton.addActionListener(e -> {
+            File selectedExperimentFile = new File(experimentFolder, experimentList.getSelectedValue());
+            String selectedPopulation = populationList.getSelectedValue();
+            detailsPanel.removeAll();
+            if (selectedPopulation != null) {
+                detailsPanel.add(new ExperimentDetails(selectedExperimentFile, selectedPopulation));
+            } else {
+                detailsPanel.add(new ExperimentDetails(selectedExperimentFile));
             }
+            detailsPanel.revalidate();
+            detailsPanel.repaint();
         });
 
         deleteExperimentButton.addActionListener(e -> {
