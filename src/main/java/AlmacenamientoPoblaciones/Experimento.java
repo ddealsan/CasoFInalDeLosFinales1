@@ -2,9 +2,7 @@ package AlmacenamientoPoblaciones;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 
 public class Experimento implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -58,6 +56,14 @@ public class Experimento implements Serializable {
 
     public int getNumeroPoblaciones(){
         return bacteriaPopulations.size();
+    }
+
+    public BacteriaPopulation getPoblacion(int index) {
+        return bacteriaPopulations.get(index);
+    }
+
+    public List<BacteriaPopulation> getPoblaciones() {
+        return this.bacteriaPopulations;
     }
 
     @Override

@@ -7,17 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExperimentoReader {
-
-    public static Experimento leerExperimento(String archivo) {
-        Experimento experimento = new Experimento("","","");
+    public Experimento leerExperimento(String filename) {
+        Experimento experimento = null;
         try {
-            FileInputStream fileIn = new FileInputStream(archivo);
-            ObjectInputStream lector = new ObjectInputStream(fileIn);
-
-            experimento = (Experimento) lector.readObject();
-            lector.close();
-        } catch (IOException | ClassNotFoundException e) {
-            // No hacer nada, simplemente se llegó al final del archivo
+            FileInputStream fileIn = new FileInputStream(filename);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            experimento = (Experimento) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Experimento class not found");
+            c.printStackTrace();
         }
         return experimento;
     }
