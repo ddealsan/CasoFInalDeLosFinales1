@@ -1,43 +1,53 @@
 package details;
 
+import AlmacenamientoPoblaciones.BacteriaPopulation;
+import AlmacenamientoPoblaciones.Experimento;
+import AlmacenamientoPoblaciones.ExperimentoReader;
+
 import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.awt.*;
 
 public class ExperimentDetails extends JPanel {
-    private JTextArea detailsArea;
+    private JPanel detailsPanel;
+    private ExperimentoReader experimentoReader; // Añade esta línea
 
     public ExperimentDetails(File experimentFile) {
-        setLayout(new BorderLayout());
-        detailsArea = new JTextArea();
-        add(new JScrollPane(detailsArea), BorderLayout.CENTER);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+        add(detailsPanel);
+        experimentoReader = new ExperimentoReader(); // Inicializa la instancia de ExperimentoReader
         loadExperimentDetails(experimentFile);
     }
 
     public ExperimentDetails(File experimentFile, String populationName) {
         this(experimentFile);
-        loadPopulationDetails(populationName);
-    }
-
-    private void loadExperimentDetails(File experimentFile) {
-        try {
-            List<String> lines = Files.readAllLines(experimentFile.toPath());
-            String details = lines.stream().collect(Collectors.joining("\n"));
-            detailsArea.setText(details);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (populationName != null) {
+            loadPopulationDetails(experimentFile, populationName);
         }
     }
 
-    private void loadPopulationDetails(String populationName) {
-        String details = detailsArea.getText();
-        details += "\n\nDetalles de la población:\n";
-        details += "Nombre de la poblacion: " + populationName;
-        // Aquí puedes agregar más detalles de la población si los tienes disponibles
-        detailsArea.setText(details);
+    private void loadExperimentDetails(File experimentFile) {
+        Experimento experimento = experimentoReader.leerExperimento(experimentFile.getAbsolutePath()); // Usa la instancia para llamar al método
+        detailsPanel.add(new JLabel("Nombre del experimento: " + experimento.getNombre()));
+        detailsPanel.add(new JLabel("Fecha de inicio: " + experimento.getFechaInicio()));
+        detailsPanel.add(new JLabel("Fecha de finalización: " + experimento.getFechaFin()));
+    }
+
+    private void loadPopulationDetails(File experimentFile, String populationName) {
+        Experimento experimento = experimentoReader.leerExperimento(experimentFile.getAbsolutePath()); // Usa la instancia para llamar al método
+        BacteriaPopulation poblacion = null;
+        for (int i = 0; i < experimento.getNumeroPoblaciones(); i++) {
+            if (experimento.getPoblacion(i).getNombre().equals(populationName)) {
+                poblacion = experimento.getPoblacion(i);
+                break;
+            }
+        }
+
+        if (poblacion != null) {
+            detailsPanel.add(new JLabel("\n\nDetalles de la población:"));
+            detailsPanel.add(new JLabel(poblacion.toString()));
+        }
     }
 }
