@@ -1,10 +1,8 @@
 <component name="ArtifactManager">
-  <artifact build-on-make="true" name="CasoFInalDeLosFinales1:jar">
+  <artifact type="jar" name="CasoFInalDeLosFinales1:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/CasoFInalDeLosFinales1_jar</output-path>
-    <root id="root">
-      <element id="archive" name="CasoFInalDeLosFinales1.jar">
-        <element id="module-output" name="CasoFInalDeLosFinales1" />
-      </element>
+    <root id="archive" name="CasoFInalDeLosFinales1.jar">
+      <element id="module-output" name="CasoFInalDeLosFinales1" />
     </root>
   </artifact>
 </component>
