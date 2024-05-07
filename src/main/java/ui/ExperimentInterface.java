@@ -18,6 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class ExperimentInterface extends JFrame {
     private JList<String> experimentList;
@@ -197,49 +200,46 @@ public class ExperimentInterface extends JFrame {
             // Get the selected experiment file
             File selectedExperimentFile = new File(experimentFolder, experimentList.getSelectedValue());
 
-            // Get the selected population
-            String selectedPopulation = populationList.getSelectedValue();
-
             try {
                 // Read the lines of the experiment file
                 List<String> lines = Files.readAllLines(selectedExperimentFile.toPath(), StandardCharsets.UTF_8);
 
-                // Variables to hold the population details
-                int initialFood = 0, highestFood = 0, finalFood = 0, experimentDays = 0;
-                String populationDetails = "";
-                String classDetails = "";
-                String experimentDuration = "";
-                String experimentDetails = "";
+                // Variables to hold the food and experiment details
+                int initialFood = 0, highestFood = 0, finalFood = 0;
+                int temperature = 0, bacteriaCount = 0;
+                String luminosity = "";
+                LocalDate startDate = null, endDate = null;
+                int duration = 0;
 
                 // Iterate over the lines
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-M-yyyy");
                 for (String line : lines) {
-                    // If the line contains the selected population, get the details
-                    if (line.contains(selectedPopulation)) {
-                        populationDetails += line + "\n";
-                        if (line.startsWith("Comida inicial (primer día): ")) {
-                            initialFood = Integer.parseInt(line.replaceAll("[^0-9]", ""));
-                        } else if (line.startsWith("Comida mas alta: ")) {
-                            highestFood = Integer.parseInt(line.replaceAll("[^0-9]", ""));
-                        } else if (line.startsWith("Comida final (ultimo día): ")) {
-                            finalFood = Integer.parseInt(line.replaceAll("[^0-9]", ""));
-                        }
-                    } else if (line.startsWith("Fecha de inicio: ")) {
-                        String startDate = line.substring("Fecha de inicio: ".length());
-                        String endDate = lines.get(lines.indexOf(line) + 1).substring("Fecha de finalización: ".length());
-                        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-                        Date start = format.parse(startDate);
-                        Date end = format.parse(endDate);
-                        long difference = end.getTime() - start.getTime();
-                        experimentDays = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
-                        experimentDuration = "Duración del experimento: " + experimentDays + " días\n";
-                    } else if (line.startsWith("Clase: ")) {
-                        classDetails = line + "\n";
-                    } else if (line.startsWith("Temperatura a la que serán sometidas: ") || line.startsWith("Tipo de luminosidad: ") || line.startsWith("Numero de bacterias: ")) {
-                        experimentDetails += line + "\n";
+                    if (line.startsWith("Comida inicial (primer día): ")) {
+                        initialFood = Integer.parseInt(line.replaceAll("[^0-9]", ""));
+                    } else if (line.startsWith("Comida mas alta: ")) {
+                        highestFood = Integer.parseInt(line.replaceAll("[^0-9]", ""));
+                    } else if (line.startsWith("Comida final (ultimo día): ")) {
+                        finalFood = Integer.parseInt(line.replaceAll("[^0-9]", ""));
+                    } else if (line.startsWith("Temperatura a la que serán sometidas: ")) {
+                        temperature = Integer.parseInt(line.replaceAll("[^0-9]", ""));
+                    } else if (line.startsWith("Tipo de luminosidad: ")) {
+                            luminosity = line.contains("Alta") ? "Alta" : line.contains("Media") ? "Media" : "Baja";
+                        } else if (line.startsWith("Fecha de inicio: ")) {
+                        startDate = LocalDate.parse(line.split(": ")[1], formatter);
+                    } else if (line.startsWith("Fecha de finalización: ")) {
+                        endDate = LocalDate.parse(line.split(": ")[1], formatter);
+                    } else if (line.startsWith("Numero de bacterias: ")) {
+                        bacteriaCount = Integer.parseInt(line.replaceAll("[^0-9]", ""));
                     }
                 }
 
+                // Calculate the duration of the experiment
+                if (startDate != null && endDate != null) {
+                    duration = (int) ChronoUnit.DAYS.between(startDate, endDate);
+                }
+
                 // Calculate the food for each day
+                int experimentDays = 30; // Replace with actual number of days
                 int midExperimentDay = experimentDays / 2 > 15 ? 15 : experimentDays / 2;
                 double foodIncreasePerDay = (double) (highestFood - initialFood) / midExperimentDay;
                 double foodDecreasePerDay = (double) (highestFood - finalFood) / (experimentDays - midExperimentDay);
@@ -252,15 +252,19 @@ public class ExperimentInterface extends JFrame {
                     }
                 }
 
-                // Create a new JFrame to display the population details
-                JFrame detailsFrame = new JFrame("Detalles de la población");
-                detailsFrame.setSize(500, 500);
-                detailsFrame.setLocationRelativeTo(null);
-                JTextArea detailsArea = new JTextArea(classDetails + populationDetails + experimentDuration + experimentDetails + dailyFood);
-                detailsArea.setEditable(false);
-                detailsFrame.add(new JScrollPane(detailsArea));
-                detailsFrame.setVisible(true);
-            } catch (IOException | ParseException exception) {
+                // Prepare the message
+                String message = "Comida inicial (primer día): " + initialFood + "\n" +
+                        "Comida mas alta: " + highestFood + "\n" +
+                        "Comida final (ultimo día): " + finalFood + "\n" +
+                        "Temperatura: " + temperature + "\n" +
+                        "Luminosidad: " + luminosity + "\n" +
+                        "Duración: " + duration + " días\n" +
+                        "Número de bacterias: " + bacteriaCount + "\n" +
+                        dailyFood;
+
+                // Display the food details in a message dialog
+                JOptionPane.showMessageDialog(null, message);
+            } catch (IOException exception) {
                 exception.printStackTrace();
             }
         });

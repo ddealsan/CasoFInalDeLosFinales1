@@ -1,0 +1,17 @@
+Nombre del experimento: ExpPrueba
+Fecha de inicio: 12-10-2024
+Fecha de finalización: 12-11-2024
+Nombre de la poblacion: Fagocicocos
+Numero de bacterias: 34
+Comida inicial (primer día): 20
+Comida mas alta: 80
+Comida final (ultimo día): 10
+Temperatura a la que serán sometidas: 37
+Tipo de luminosidad: Alta
+Nombre de la poblacion: Limonelo
+Numero de bacterias: 34
+Comida inicial (primer día): 10
+Comida mas alta: 40
+Comida final (ultimo día): 10
+Temperatura a la que serán sometidas: 35
+Tipo de luminosidad: Alta

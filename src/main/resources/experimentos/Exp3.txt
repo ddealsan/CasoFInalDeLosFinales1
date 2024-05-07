@@ -1,0 +1,11 @@
+Nombre del experimento: Exp3
+Fecha de inicio: 12-2-2004
+Fecha de finalización: 12-3-2004
+Nombre de la poblacion: Leucocitos
+Numero de bacterias: 3
+Comida inicial (primer día): 4
+Comida mas alta: 6
+Comida final (ultimo día): 2
+Temperatura a la que serán sometidas: 24
+Tipo de luminosidad: Alta
+
