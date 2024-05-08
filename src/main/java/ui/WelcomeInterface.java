@@ -58,7 +58,10 @@ public class WelcomeInterface extends JFrame {
 
         // Add an action listener to the "Iniciar" button
         if (text.equals("Iniciar")) {
-            button.addActionListener(e -> new ExperimentInterface());
+            button.addActionListener(e -> {
+                new ExperimentInterface();
+                this.dispose(); // This will close the WelcomeInterface window
+            });
         }
 
         return button;
