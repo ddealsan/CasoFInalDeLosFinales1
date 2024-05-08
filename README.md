@@ -1,3 +1,5 @@
+# Url del proyecto: https://github.com/ddealsan/CasoFInalDeLosFinales1.git
+
 # Gestión de Cultivos de Bacterias
 
 Este proyecto es una aplicación Java que permite gestionar experimentos con cultivos de bacterias. Los experimentos se definen en archivos de texto y la aplicación proporciona una interfaz gráfica para interactuar con ellos.
